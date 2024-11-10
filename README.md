@@ -12,4 +12,7 @@ Unzip them and note down the location.
 ```
 tar -xvf Yeast_pdb.tar -C <folder_name>
 ```
-
+Unfortunately, the output is once more a bunch of compressed files. To unzip, run
+```
+gzip -d <folder_name>/*.pdb.gz
+```
