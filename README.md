@@ -16,3 +16,11 @@ Unfortunately, the output is once more a bunch of compressed files. To unzip, ru
 ```
 gzip -d <folder_name>/*.pdb.gz
 ```
+
+Step 2: Reading pdb files to identify the low-score regions.
+
+Run this to identify regions whose scores are lower than 35.
+```
+python Part1_identify_low_score.py
+```
+And the result will save as filtered_protein_data.json, you can also find this in the repository.
