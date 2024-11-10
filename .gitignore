@@ -1,3 +1,4 @@
 *.tar
 yeast_pdb/
 *.gz
+*.pdb
