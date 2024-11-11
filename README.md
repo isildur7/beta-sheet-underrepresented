@@ -35,4 +35,4 @@ Step 4: Combine the results from Part1 and Part2.
 ```
 python Part3_combine_overlap_region.py
 ```
-Result is save as combined_protein_data.
+Result is save as combined_protein_data.json.
