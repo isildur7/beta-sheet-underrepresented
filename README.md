@@ -24,3 +24,10 @@ Run this to identify regions whose scores are lower than 35.
 python Part1_identify_low_score.py
 ```
 And the result will save as filtered_protein_data.json, you can also find this in the repository.
+
+Step 3: Use Stride to find beta-sheet region. 
+```
+python Part2_beta_sheet_region.py and Part2_amino_acid_in_beta_region.py
+```
+Result is save as beta_sheet_output.json.
+
