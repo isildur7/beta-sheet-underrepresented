@@ -75,8 +75,8 @@ def extract_beta_sheet_sequences(output_file):
 
 # Main function
 def main():
-    input_dir = "/Users/tsz/Documents/School/CBB520/assignment3"
-    output_dir = "stride_output"
+    input_dir = "./pdb_file"
+    output_dir = "./stride_output"
 
     # Check if the STRIDE binary is available
     stride_path = download_and_extract_stride()

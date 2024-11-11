@@ -31,3 +31,8 @@ python Part2_beta_sheet_region.py and Part2_amino_acid_in_beta_region.py
 ```
 Result is save as beta_sheet_output.json.
 
+Step 4: Combine the results from Part1 and Part2. 
+```
+python Part3_combine_overlap_region.py
+```
+Result is save as combined_protein_data.
