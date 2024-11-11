@@ -19,7 +19,7 @@ def extract_beta_sheet_from_file(file_path):
             columns = line.split()
 
             # Check if the region is a beta-sheet
-            if "BetaSheet" in columns[6]:  # Assuming "BetaSheet" is in the 7th column
+            if "Strand" in columns[6]:  # Assuming "BetaSheet" is in the 7th column
                 position = columns[4]  # Position is in the 5th column (1-based index)
                 amino_acid = columns[1]  # Amino acid is in the 2nd column
 
