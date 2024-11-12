@@ -2,3 +2,8 @@
 yeast_pdb/
 *.gz
 *.pdb
+.vscode/
+.idea/
+*.pyc
+*.ipynb_checkpoints/
+__pycache__/
