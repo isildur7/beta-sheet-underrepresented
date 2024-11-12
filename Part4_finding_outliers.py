@@ -1,7 +1,7 @@
 # we should compare the sequences in the low score data to sequences in the beta sheet
 # data to find outliers. For each length, we will first count how many unique motifs
 # are present in the beta sheet data. Motif extraction should happen for each individual
-# sequence. Then we will will randomize every sequence in the low score data 100 times,
+# sequence. Then we will randomize every sequence in the low score data 100 times,
 # and count how many times each motif appears in the randomized sequences. We will then
 # compare the number of times each motif appears in the original sequence to the mean
 # and standard deviation of the counts in the randomized sequences. If the count of a
@@ -11,6 +11,10 @@
 import json
 
 from seqgen import find_amino_acid_distribution, generate_random_sequence
+from seqfind import find_two_letter_combos
+
+from collections import Counter
+
 
 # Load JSON data from files
 
@@ -97,3 +101,59 @@ with open("outliers_mean_std_len1.json", "w") as outfile:
 # the mean and standard deviation of the counts in the randomized sequences. If the count
 # of a motif in the original sequence is more than 3 standard deviations away from the
 # mean, we will consider it an outlier.
+
+# Process beta sheet data to find two-letter motif counts
+beta_motif_counts = Counter()
+for protein_id in file2_data:
+    for sequence in file2_data[protein_id]:
+        if len(sequence) >= 2:
+            beta_motif_counts.update(find_two_letter_combos(sequence))
+
+# Process low score data to find two-letter motif counts
+low_score_motif_counts = Counter()
+for protein_id in file1_data:
+    for sequence in file1_data[protein_id]:
+        if len(sequence) >= 2:
+            low_score_motif_counts.update(find_two_letter_combos(sequence))
+
+# Randomize each low score sequence 100 times and count motif occurrences
+random_motif_counts = []
+for protein_id in file1_data:
+    for sequence in file1_data[protein_id]:
+        if len(sequence) >= 2:
+            # Get amino acids and probabilities for the low score sequence
+            low_score_amino_acids, low_score_probs = find_amino_acid_distribution(sequence)
+            sequence_random_counts = []
+            for _ in range(100):
+                random_seq = generate_random_sequence(len(sequence), low_score_amino_acids, low_score_probs)
+                sequence_random_counts.append(find_two_letter_combos(random_seq))
+            random_motif_counts.extend(sequence_random_counts)
+
+# Calculate mean and standard deviation for each motif across randomized sequences
+all_random_motifs = set(motif for count_dict in random_motif_counts for motif in count_dict)
+random_motif_stats = {}
+for motif in all_random_motifs:
+    counts = [count_dict.get(motif, 0) for count_dict in random_motif_counts]
+    mean = sum(counts) / len(counts)
+    variance = sum((x - mean) ** 2 for x in counts) / len(counts)
+    std_dev = variance ** 0.5
+    random_motif_stats[motif] = (mean, std_dev)
+
+# Identify outliers in beta sheet data
+outliers_motifs = {
+    motif: count
+    for motif, count in beta_motif_counts.items()
+    if count > random_motif_stats.get(motif, (0, 0))[0] + 3 * random_motif_stats.get(motif, (0, 0))[1]
+}
+
+# Store outliers and their mean and std in a JSON file
+outliers_mean_std_motifs = {
+    motif: {"mean": mean, "std": std}
+    for motif, (mean, std) in random_motif_stats.items()
+    if motif in outliers_motifs
+}
+
+# Write results to JSON
+output_data_motifs = {"outliers_motifs": outliers_motifs, "mean_std_motifs": outliers_mean_std_motifs}
+with open("outliers_motifs_len2.json", "w") as outfile:
+    json.dump(output_data_motifs, outfile)
